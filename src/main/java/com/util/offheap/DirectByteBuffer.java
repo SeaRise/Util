@@ -3,10 +3,11 @@ package com.util.offheap;
 @SuppressWarnings("restriction")
 public class DirectByteBuffer implements ByteBuffer {
     
-    private long address;
+    private final long address;
     
-    private java.nio.ByteBuffer byteBuffer;
+    private final int capacity;
     
+    private final java.nio.ByteBuffer byteBuffer;
     
 	private static final sun.misc.Unsafe UNSAFE = getUnsafe();
     
@@ -15,16 +16,13 @@ public class DirectByteBuffer implements ByteBuffer {
     private static final long ARRAY_BASE_OFFSET = (long) UNSAFE.arrayBaseOffset(byte[].class);
     
     public DirectByteBuffer(int capacity) {
-        byteBuffer = java.nio.ByteBuffer.allocateDirect(capacity);
-        java.lang.reflect.Method method;
-        try {
-            // Get the actual address by calling address method
-            method = byteBuffer.getClass().getDeclaredMethod("address");
-            method.setAccessible(true);
-            address = (Long) method.invoke(byteBuffer);
-        } catch (Exception e) {
-            throw new Error(e);
-        }
+    	this(java.nio.ByteBuffer.allocateDirect(capacity));
+    }
+    
+    private DirectByteBuffer(java.nio.ByteBuffer buf) {
+    	this.byteBuffer = buf;
+    	this.capacity = buf.capacity();
+    	address = ((sun.nio.ch.DirectBuffer)buf).address();
     }
     
     
@@ -43,7 +41,11 @@ public class DirectByteBuffer implements ByteBuffer {
      * 检查越界
      * */
     private void check(int position, byte[] b, int offset, int length) {
-    	if ((position+length) > byteBuffer.capacity()) {
+    	if (position < 0 || offset < 0 || length < 0) {
+    		throw new IllegalArgumentException("illegal argument");
+    	}
+    	
+    	if ((position+length) > capacity) {
     		throw new IllegalArgumentException("out of buffer capacity");
     	}
     	
@@ -90,6 +92,24 @@ public class DirectByteBuffer implements ByteBuffer {
         }
     }
     
+    public ByteBuffer slice(int start, int end) {
+    	if (start < 0 || end < 0 || start > end || 
+    			start >= capacity || end > capacity) {
+    		throw new IllegalArgumentException("illegal argument");
+    	}
+    	
+    	byteBuffer.limit(end);
+    	byteBuffer.position(start);
+    	return new DirectByteBuffer(byteBuffer.slice());
+    } 
+    
+    public int capacity() {
+    	return capacity;
+    }
+    
+    public long address() {
+    	return address;
+    }
 
     public void free() {
         try {

@@ -11,6 +11,9 @@ public interface ByteBuffer {
    
     void put(int position, byte[] source, int offset, int length);
     
+    int capacity();
+    
+    ByteBuffer slice(int start, int end);
     
     void free();
 }
