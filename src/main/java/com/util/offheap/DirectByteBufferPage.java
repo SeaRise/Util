@@ -19,12 +19,19 @@ public class DirectByteBufferPage implements ByteBufferStore {
 	
 	private int freeMemory;
 	
-	public DirectByteBufferPage(int chunkSize, int chunkCount) {
+	public DirectByteBufferPage(final int chunkSize, final int chunkCount) {
+		this(chunkSize, chunkCount, new DirectByteBuffer(chunkSize*chunkCount));
+	}
+	
+	public DirectByteBufferPage(final int chunkSize, final int chunkCount, final ByteBuffer buf) {
+		if (buf.capacity() != chunkSize*chunkCount) {
+			throw new IllegalArgumentException("byte buffer capacity error!");
+		}
 		this.chunkSize = chunkSize;
 		this.chunkCount = chunkCount;
-		this.pageBuf = new DirectByteBuffer(chunkSize*chunkCount);
+		this.pageBuf = buf;
 		this.allocateTrack = new BitSet(chunkCount);
-        address = ((DirectByteBuffer)pageBuf).address();
+        this.address = ((DirectByteBuffer)pageBuf).address();
         this.freeMemory = pageBuf.capacity();
 	}
 	
