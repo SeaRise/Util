@@ -5,10 +5,8 @@ package com.util.offheap;
  */
 public interface ByteBuffer {
     
-    
     void get(int position, byte[] destination, int offset, int length);
     
-   
     void put(int position, byte[] source, int offset, int length);
     
     int capacity();

@@ -35,6 +35,10 @@ public class SegmentLock {
 	public void lock(int index) {
 		getLock(index).lock();
 	}
+	
+	public void tryLock(int index) {
+		getLock(index).tryLock();
+	}
 
 	public void unlock(int index) {
 		getLock(index).unlock();
