@@ -67,8 +67,6 @@ public class RefCountCacher<K, V> implements Cacher<K, V> {
 				ref.isGetting.set(false);
 				return cache;
 			}
-			
-			
 		}
 	}
 	
