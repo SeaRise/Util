@@ -11,7 +11,15 @@ import com.util.lock.SegmentLock;
  * DAppendOnlyArrayList只允许追加和修改元素,不支持删除元素
  * 实现方式类似ConcurrentHashMap
  * 在AppendOnlyArrayList之上做的改进
- * 这种实现方式是失败的,add的元素不能被get立即可见,但是为什么会这样,想不通.
+ * 这种实现方式是失败的,append的元素不能被get立即可见,但是为什么会这样,想不通.
+ * 问题找到了,并非可见性的问题,解决了,在append的注释里写了.
+ * 
+ * 测了一下,发现速度还没有AppendOnlyArrayList的快,
+ * 不知道是这种写法得不偿失还是测试的场景不好
+ * 多次选择了几个参数(一个写线程add数目,thread数目)发现
+ * 在两个参数都小的情况下差不多,AppendOnlyArrayList稍快一些
+ * 在参数大的情况下DAppendOnlyArrayList明显快得多.
+ * 改进还是有效果的!.
  * */
 @SuppressWarnings("restriction")
 public class DAppendOnlyArrayList<E> {
@@ -64,10 +72,10 @@ public class DAppendOnlyArrayList<E> {
     }
 	
 	public void append(E e) {
+		int index = lastIndex.incrementAndGet()-1;
+		ensureCapacityInternal(lastIndex.get());
 		try {
-			int index = lastIndex.incrementAndGet()-1;
-			ensureCapacityInternal(lastIndex.get());
-			// 这里为什么可以只加读锁,是因为
+			// 这里为什么可以只加读锁,是因为只用读锁来阻塞扩容
 			// - ensureCapacityInternal保证了elementData的容量足够,所以只用竞争lastIndex这个字段
 			// - 可以避免数组越界，看ensureCapacityInternal的注释
 			addLock.readLock().lock();
@@ -75,7 +83,15 @@ public class DAppendOnlyArrayList<E> {
 		} finally {
 			addLock.readLock().unlock();
 		}
-		size.incrementAndGet();
+		// 这里原先的写法是size.incrementAndGet()
+		// 这样写法会有问题,因为index的值和size.get()的值不一定相同
+		// 可能会造成0-size之间的元素还没有赋值
+		// 所以这里要一直自旋,直到size == index
+		// 所以这里有点无语,无扩容情况下并发append的效果被减弱了
+		// 不然试试把size.compareAndSet(index, index+1)放到线程池里去异步执行
+		while(size.compareAndSet(index, index+1)) {
+			Thread.yield();
+		}
 	}
 	
 	// 扩容条件是minCapacity >= capacity

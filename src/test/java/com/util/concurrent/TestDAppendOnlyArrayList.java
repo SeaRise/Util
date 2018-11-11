@@ -20,22 +20,24 @@ public class TestDAppendOnlyArrayList {
 	}
 	
 	static AtomicInteger count = new AtomicInteger(0);
-	static int addSize = 10000;
+	static int addSize = 100000;
+	static int threadNum = 100;
 	@Test
 	public void testMutiThread() throws InterruptedException {
-		int size = 10000;
+		int size = 100000;
+		int c = threadNum*3;
 		DAppendOnlyArrayList<Integer> ss = new DAppendOnlyArrayList<Integer>(size);
 		for (int i = 0; i < size; i++) {
 			ss.append(i);
 		}
-		ExecutorService service = Executors.newFixedThreadPool(60);
-		for (int i = 0; i < 20; i++) {
+		ExecutorService service = Executors.newFixedThreadPool(c);
+		for (int i = 0; i < threadNum; i++) {
 			service.execute(new read1(ss));
 			service.execute(new read2(ss));
 			service.execute(new write(ss));
 		}
 		
-		while(count.intValue() != 60) {
+		while(count.intValue() != c) {
 			Thread.sleep(100);
 		}
 	}
