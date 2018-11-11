@@ -5,25 +5,43 @@ import com.util.common.Common;
 /*
  * 单线程读,单线程写
  * 不支持put null
+ * 
+ * 在数据量大的情况下可以发现,加了缓存行,速度明显加快
  * */
 @SuppressWarnings("restriction")
 public class RingBuffer<E> {
 	
 	private final static int DEFAULT_STORAGE_POWER = 10;
 	private final int bufferSize;
-	private final Object[] buffer;
 
+	// 填充缓存行,
+	@SuppressWarnings({ "unused" })
+	private long p17, p18, p19, p20, p21, p22, p23;
+	@SuppressWarnings("unused")
+	private int p24;	
+	
+	// 读线程标志量
 	private volatile int head = 0;
 	
 	// 填充缓存行,
 	// 通常来讲，cache line是64Byte,所以head和tail之间填充7个long和1个int,
+	// head和tail经常被两个线程修改,所以相邻head和tail的字段都用填充缓存行来隔开
 	// 这样保证head和tail不在一个cache line上
 	@SuppressWarnings({ "unused" })
 	private long p1, p2, p3, p4, p5, p6, p7;
 	@SuppressWarnings("unused")
 	private int p8;
 	
+	// 写线程标志量
 	private volatile int tail = 0;
+	
+	// 填充缓存行,
+	@SuppressWarnings({ "unused" })
+	private long p9, p10, p11, p12, p13, p14, p15;
+	@SuppressWarnings("unused")
+	private int p16;	
+	
+	private final Object[] buffer;
 	
 	
 	public RingBuffer() {

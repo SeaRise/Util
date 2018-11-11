@@ -10,7 +10,7 @@ import org.junit.Test;
 public class TestRingBuffer {
 	
 	private RingBuffer<Integer> b = new RingBuffer<Integer>(4);
-	private int num = 50000000;
+	private int num = 500000000;
 	private ExecutorService service = Executors.newFixedThreadPool(2);
 	static AtomicInteger count = new AtomicInteger(0);
 	
