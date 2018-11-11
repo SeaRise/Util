@@ -20,7 +20,7 @@ public class TestDAppendOnlyArrayList {
 	}
 	
 	static AtomicInteger count = new AtomicInteger(0);
-	static int addSize = 100000;
+	static int addSize = 300000;
 	static int threadNum = 100;
 	@Test
 	public void testMutiThread() throws InterruptedException {

@@ -23,6 +23,7 @@ public class RingBuffer<E> {
 	// 读线程标志量
 	private volatile int head = 0;
 	
+	
 	// 填充缓存行,
 	// 通常来讲，cache line是64Byte,所以head和tail之间填充7个long和1个int,
 	// head和tail经常被两个线程修改,所以相邻head和tail的字段都用填充缓存行来隔开
