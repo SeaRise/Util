@@ -8,10 +8,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestAppendOnlyArrayList {
+public class TestDAppendOnlyArrayList {
 	@Test
 	public void testLocal() {
-		AppendOnlyArrayList<String> ss = new AppendOnlyArrayList<String>();
+		DAppendOnlyArrayList<String> ss = new DAppendOnlyArrayList<String>();
 		ss.append("ss");
 		Assert.assertTrue("ss".equals(ss.get(0)));
 		ss.set(0, "sss");
@@ -21,11 +21,10 @@ public class TestAppendOnlyArrayList {
 	
 	static AtomicInteger count = new AtomicInteger(0);
 	static int addSize = 10000;
-	
 	@Test
 	public void testMutiThread() throws InterruptedException {
 		int size = 10000;
-		AppendOnlyArrayList<Integer> ss = new AppendOnlyArrayList<Integer>(size);
+		DAppendOnlyArrayList<Integer> ss = new DAppendOnlyArrayList<Integer>(size);
 		for (int i = 0; i < size; i++) {
 			ss.append(i);
 		}
@@ -43,9 +42,9 @@ public class TestAppendOnlyArrayList {
 	
 	static class read1 implements Runnable {
 
-		AppendOnlyArrayList<Integer> ss;
+		DAppendOnlyArrayList<Integer> ss;
 		
-		read1(AppendOnlyArrayList<Integer> ss) {
+		read1(DAppendOnlyArrayList<Integer> ss) {
 			this.ss = ss;
 		}
 		
@@ -62,9 +61,9 @@ public class TestAppendOnlyArrayList {
 	
 	static class read2 implements Runnable {
 
-		AppendOnlyArrayList<Integer> ss;
+		DAppendOnlyArrayList<Integer> ss;
 		
-		read2(AppendOnlyArrayList<Integer> ss) {
+		read2(DAppendOnlyArrayList<Integer> ss) {
 			this.ss = ss;
 		}
 		
@@ -81,9 +80,9 @@ public class TestAppendOnlyArrayList {
 	}
 	
 	static class write implements Runnable {
-		AppendOnlyArrayList<Integer> ss;
+		DAppendOnlyArrayList<Integer> ss;
 		
-		write(AppendOnlyArrayList<Integer> ss) {
+		write(DAppendOnlyArrayList<Integer> ss) {
 			this.ss = ss;
 		}
 		public void run() {

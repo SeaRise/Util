@@ -1,5 +1,7 @@
 package com.util.offheap;
 
+import com.util.common.Common;
+
 @SuppressWarnings("restriction")
 public class DirectByteBuffer implements ByteBuffer {
     
@@ -9,7 +11,7 @@ public class DirectByteBuffer implements ByteBuffer {
     
     private final java.nio.ByteBuffer byteBuffer;
     
-	private static final sun.misc.Unsafe UNSAFE = getUnsafe();
+	private static final sun.misc.Unsafe UNSAFE = Common.getUnsafe();
     
     private static final long UNSAFE_COPY_THRESHOLD = 1024L * 1024L;
     
@@ -122,16 +124,4 @@ public class DirectByteBuffer implements ByteBuffer {
             throw new Error(e);
         }
     }
-    
-
-    private static sun.misc.Unsafe getUnsafe() {
-        try {
-            java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            return (sun.misc.Unsafe) unsafeField.get(null);
-        } catch (Exception e) {
-            throw new Error(e);
-        }
-    }
-    
 }
