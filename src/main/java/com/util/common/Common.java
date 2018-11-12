@@ -1,5 +1,6 @@
 package com.util.common;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Common {
@@ -14,7 +15,7 @@ public class Common {
         }
     }
 	
-	public static int randomInt(int n) {
-		return ThreadLocalRandom.current().nextInt(n);
+	public static Random random() {
+		return ThreadLocalRandom.current();
 	}
 }
