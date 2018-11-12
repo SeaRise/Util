@@ -62,7 +62,7 @@ public class DirectByteBufferStore implements ByteBufferStore {
 	}
 	
 	private int getIndex() {
-		return Common.random().nextInt(imstores.length);
+		return Common.randomInt(imstores.length);
 	}
 
 	public boolean free(final ByteBuffer byteBuffer) {
