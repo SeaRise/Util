@@ -2,6 +2,7 @@ package com.util.offheap;
 
 import com.util.common.Common;
 
+//堆外内存bytebuffer
 @SuppressWarnings("restriction")
 public class DirectByteBuffer implements ByteBuffer {
     
