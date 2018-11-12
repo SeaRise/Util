@@ -2,13 +2,17 @@
 
 - lock 
 	- 分段锁
+	- 分段读写锁
 - time 
 	- 时间缓存
 - offheap 
-	- 堆外内存相关
+	- 封装了byteBuffer:heap,direct,dataOperator
+	- 堆外内存池
 - cache
 	- 引用计数缓存
 - current
-	- 并发容器
+	- 并发容器,
+		- AppendOnlyArrayList
+		- 单生产者单消费者的ringbuffer
 - Common
 	- 通用

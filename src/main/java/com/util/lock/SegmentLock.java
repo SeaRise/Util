@@ -10,7 +10,7 @@ public class SegmentLock {
 	
 	private static final int DEFAULT_LOCK_LEVEL = 4;
 	
-	private Lock[] locks = null;
+	private final Lock[] locks;
 	
 	public SegmentLock() {
 		this(DEFAULT_LOCK_LEVEL);

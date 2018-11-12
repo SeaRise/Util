@@ -4,6 +4,8 @@ import java.util.BitSet;
 
 /*
  * Thread unsafe
+ * 
+ * 使用位图来分配内存
  * */
 public class DirectByteBufferPage implements ByteBufferStore {
 	

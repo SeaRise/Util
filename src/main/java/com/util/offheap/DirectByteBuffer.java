@@ -2,7 +2,10 @@ package com.util.offheap;
 
 import com.util.common.Common;
 
-//堆外内存bytebuffer
+/*
+ * 堆外内存bytebuffer
+ * thread unsafe
+ * **/
 @SuppressWarnings("restriction")
 public class DirectByteBuffer implements ByteBuffer {
     

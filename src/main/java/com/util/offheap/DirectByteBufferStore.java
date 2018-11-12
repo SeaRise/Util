@@ -6,10 +6,16 @@ import java.util.concurrent.Executors;
 
 import com.util.common.Common;
 
+/*
+ * thread safe
+ * 
+ * 使用多个byteBufferPage来分配内存
+ * **/
 public class DirectByteBufferStore implements ByteBufferStore {
 	
 	private final DirectByteBufferPage[] imstores;
 	
+	//管理分配出去的byteBuffer和page的对应关系
 	private final ConcurrentHashMap<ByteBuffer, ByteBufferStore> storeMap = 
 			new ConcurrentHashMap<ByteBuffer, ByteBufferStore>();
 	
@@ -41,9 +47,8 @@ public class DirectByteBufferStore implements ByteBufferStore {
 		if (null == buf) {
 			//随机分配不成功,遍历分配
 			for (index = 0; index < imstores.length; index++) {
-				buf = doAllocate(index, size);
-				if (null == buf) {
-					continue;
+				if (null != (buf = doAllocate(index, size))) {
+					break;
 				}
 			}
 		}
