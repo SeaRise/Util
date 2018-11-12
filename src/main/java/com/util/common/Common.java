@@ -1,5 +1,8 @@
 package com.util.common;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Common {
 	@SuppressWarnings("restriction")
 	public static sun.misc.Unsafe getUnsafe() {
@@ -11,4 +14,8 @@ public class Common {
             throw new Error(e);
         }
     }
+	
+	public static Random random() {
+		return ThreadLocalRandom.current();
+	}
 }

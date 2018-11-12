@@ -43,5 +43,20 @@ public class TimeUtil {
     public static long currentTimeMillis() {
         return time;
     }
+    
+    public long toSeconds(long millis) {
+        return TimeUnit.MILLISECONDS.toSeconds(millis);
+    }
 
+    public long toMinutes(long millis) {
+        return TimeUnit.MILLISECONDS.toMinutes(millis);
+    }
+
+    public long toHours(long millis) {
+        return TimeUnit.MILLISECONDS.toHours(millis);
+    }
+
+    public long toDays(long millis) {
+        return TimeUnit.MILLISECONDS.toDays(millis);
+    }
 }

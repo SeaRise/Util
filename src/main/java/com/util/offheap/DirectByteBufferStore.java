@@ -1,13 +1,12 @@
 package com.util.offheap;
 
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.util.common.Common;
+
 public class DirectByteBufferStore implements ByteBufferStore {
-	
-	private final Random random;
 	
 	private final DirectByteBufferPage[] imstores;
 	
@@ -20,7 +19,6 @@ public class DirectByteBufferStore implements ByteBufferStore {
 	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 	
 	public DirectByteBufferStore(final int chunkSize, final int chunkCount, final int bufferSize) {
-		random = new Random();
 		imstores = new DirectByteBufferPage[bufferSize];
 		storeSize = chunkSize*chunkCount;
 		//整块分配堆外内存,目的是为了更好利用分级缓存机制
@@ -64,7 +62,7 @@ public class DirectByteBufferStore implements ByteBufferStore {
 	}
 	
 	private int getIndex() {
-		return random.nextInt(imstores.length);
+		return Common.random().nextInt(imstores.length);
 	}
 
 	public boolean free(final ByteBuffer byteBuffer) {
