@@ -6,7 +6,7 @@
 - time 
 	- 时间缓存
 - offheap 
-	- 封装了byteBuffer:heap,direct,dataOperator
+	- 封装了byteBuffer:heap,direct,dataOperator,combine
 	- 堆外内存池
 - cache
 	- 引用计数缓存
