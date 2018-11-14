@@ -1,4 +1,4 @@
-package com.util.offheap;
+package com.util.buffer.bytebuffer;
 
 /**
  * 对ByteBuffer的再包装

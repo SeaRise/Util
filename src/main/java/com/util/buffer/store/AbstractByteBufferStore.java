@@ -1,9 +1,10 @@
-package com.util.offheap;
+package com.util.buffer.store;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.util.buffer.bytebuffer.ByteBuffer;
 import com.util.common.Common;
 
 /*
@@ -11,9 +12,9 @@ import com.util.common.Common;
  * 
  * 使用多个byteBufferPage来分配内存
  * **/
-public class DirectByteBufferStore implements ByteBufferStore {
+public abstract class AbstractByteBufferStore implements ByteBufferStore {
 	
-	private final DirectByteBufferPage[] imstores;
+	private final ByteBufferStore[] imstores;
 	
 	//管理分配出去的byteBuffer和page的对应关系
 	private final ConcurrentHashMap<ByteBuffer, ByteBufferStore> storeMap = 
@@ -24,16 +25,21 @@ public class DirectByteBufferStore implements ByteBufferStore {
 	//异步执行free的线程池,单线程排队进行就可以了,没必要多线程释放
 	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 	
-	public DirectByteBufferStore(final int chunkSize, final int chunkCount, final int bufferSize) {
-		imstores = new DirectByteBufferPage[bufferSize];
+	AbstractByteBufferStore(final int chunkSize, final int chunkCount, final int bufferSize) {
+		imstores = new ByteBufferStore[bufferSize];
 		storeSize = chunkSize*chunkCount;
 		//整块分配堆外内存,目的是为了更好利用分级缓存机制
-		ByteBuffer centralBuffer = new DirectByteBuffer(storeSize*bufferSize);
+		ByteBuffer centralBuffer = initCentralBuffer(storeSize*bufferSize);
 		for (int i = 0; i < bufferSize; i++) {
-			imstores[i] = new DirectByteBufferPage(chunkSize, chunkCount, 
+			imstores[i] = initPage(chunkSize, chunkCount, 
 					centralBuffer.slice(i*storeSize, i*storeSize+storeSize));
 		}
 	}
+	
+	//整块分配堆外内存
+	protected abstract ByteBuffer initCentralBuffer(int size);
+	
+	protected abstract ByteBufferStore initPage(int chunkSize, int chunkCount, ByteBuffer buf);
 	
 	public ByteBuffer allocate(final int size) {
 		//超过分配大小限制
@@ -105,6 +111,16 @@ public class DirectByteBufferStore implements ByteBufferStore {
 				store.free(byteBuffer);
 			}
 		}
+	}
+
+	public int freeMemory() {
+		int freeMemory = 0;
+		for (int i = 0; i < imstores.length; i++) {
+			synchronized (imstores[i]) {
+				freeMemory += imstores[i].freeMemory();
+			}
+		}
+		return freeMemory;
 	}
 
 }

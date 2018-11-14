@@ -1,8 +1,11 @@
-package com.util.offheap;
+package com.util.buffer;
 
 import org.junit.Assert;
 
 import org.junit.Test;
+
+import com.util.buffer.bytebuffer.DataBuffer;
+import com.util.buffer.bytebuffer.DirectByteBuffer;
 
 public class TestDataBuffer {
 	

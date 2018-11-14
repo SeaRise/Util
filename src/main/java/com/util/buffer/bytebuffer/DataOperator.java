@@ -1,4 +1,4 @@
-package com.util.offheap;
+package com.util.buffer.bytebuffer;
 
 //提供基本类型和string读写能力
 public interface DataOperator {

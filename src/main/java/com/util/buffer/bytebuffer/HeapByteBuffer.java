@@ -1,4 +1,6 @@
-package com.util.offheap;
+package com.util.buffer.bytebuffer;
+
+
 
 /*
  * 堆内存bytebuffer
@@ -42,6 +44,10 @@ public class HeapByteBuffer implements ByteBuffer {
 
 	public int capacity() {
 		return capacity;
+	}
+	
+	public int address() {
+		return address;
 	}
 
 	public ByteBuffer slice(int start, int end) {

@@ -1,31 +1,27 @@
-package com.util.offheap;
+package com.util.buffer.store;
 
 import java.util.BitSet;
+
+import com.util.buffer.bytebuffer.ByteBuffer;
 
 /*
  * Thread unsafe
  * 
  * 使用位图来分配内存
  * */
-public class DirectByteBufferPage implements ByteBufferStore {
+abstract class AbstractByteBufferPage implements ByteBufferStore {
 	
-	private final int chunkSize;
+	protected final int chunkSize;
 	
-	private final int chunkCount;
+	protected final int chunkCount;
 	
 	private final BitSet allocateTrack;
 	
-	private final ByteBuffer pageBuf;
-	
-	private final long address;
+	protected final ByteBuffer pageBuf;
 	
 	private int freeMemory;
 	
-	public DirectByteBufferPage(final int chunkSize, final int chunkCount) {
-		this(chunkSize, chunkCount, new DirectByteBuffer(chunkSize*chunkCount));
-	}
-	
-	public DirectByteBufferPage(final int chunkSize, final int chunkCount, final ByteBuffer buf) {
+	AbstractByteBufferPage(final int chunkSize, final int chunkCount, final ByteBuffer buf) {
 		if (buf.capacity() != chunkSize*chunkCount) {
 			throw new IllegalArgumentException("byte buffer capacity error!");
 		}
@@ -33,7 +29,6 @@ public class DirectByteBufferPage implements ByteBufferStore {
 		this.chunkCount = chunkCount;
 		this.pageBuf = buf;
 		this.allocateTrack = new BitSet(chunkCount);
-        this.address = ((DirectByteBuffer)pageBuf).address();
         this.freeMemory = pageBuf.capacity();
 	}
 	
@@ -69,36 +64,43 @@ public class DirectByteBufferPage implements ByteBufferStore {
 		}
 			
 		if (continueCount == theChunkCount) {
-			int offsetStart = startChunk * chunkSize;
-			int offsetEnd = offsetStart + theChunkCount * chunkSize;
 			markChunksUsed(startChunk, theChunkCount);
 			freeMemory -= theChunkCount * chunkSize;
-			return pageBuf.slice(offsetStart, offsetEnd);
+			return returnSlice(startChunk, theChunkCount);
 		} else {
 			return null;
 		}
 	}
+	
+	private ByteBuffer returnSlice(int startChunk, int theChunkCount) {
+		int offsetStart = startChunk * chunkSize;
+		int offsetEnd = offsetStart + theChunkCount * chunkSize;
+		return pageBuf.slice(offsetStart, offsetEnd);
+	}
 
+	//需要实现ensureBelong和getRecycleStartChunk
 	public boolean free(ByteBuffer byteBuffer) {
 		if (null == byteBuffer) {
 			return false;
 		}
 		
-		long bufferAddress = ((DirectByteBuffer)byteBuffer).address();
-		int size = byteBuffer.capacity();
-		
-		//do not allocate by this page
-		if (bufferAddress < address || bufferAddress >= address + capacity()) {
+		if (!ensureBelong(byteBuffer)) {
 			return false;
 		}
 		
 		//recycle
-		int startChunk = (int) ((bufferAddress-address)/chunkSize);
-		int theChunkCount = size / chunkSize;
+		int startChunk = getRecycleStartChunk(byteBuffer);
+		int theChunkCount = byteBuffer.capacity() / chunkSize;
 		markChunksUnused(startChunk, theChunkCount);
-		freeMemory += size;
+		freeMemory += byteBuffer.capacity();
 		return true;
 	}
+	
+	//do allocate by this page ? 
+	protected abstract boolean ensureBelong(ByteBuffer byteBuffer);
+	
+	//获取回收buffer的startChunk
+	protected abstract int getRecycleStartChunk(ByteBuffer byteBuffer);
 	
 	public int freeMemory() {
 		return freeMemory;
@@ -119,5 +121,7 @@ public class DirectByteBufferPage implements ByteBufferStore {
 	public void close() {
 		pageBuf.free();
 	}
+	
+	
 	
 }

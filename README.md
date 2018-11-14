@@ -5,9 +5,9 @@
 	- 分段读写锁
 - time 
 	- 时间缓存
-- offheap 
-	- 封装了byteBuffer:heap,direct,dataOperator,combine
-	- 堆外内存池
+- buffer 
+	- 封装了byteBuffer: heap,direct,dataOperator,combine
+	- 内存池: 位图分配
 - cache
 	- 引用计数缓存
 - current

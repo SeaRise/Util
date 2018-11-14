@@ -1,7 +1,11 @@
-package com.util.offheap;
+package com.util.buffer;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.util.buffer.bytebuffer.ByteBuffer;
+import com.util.buffer.bytebuffer.CombineBuffer;
+import com.util.buffer.bytebuffer.DirectByteBuffer;
 
 public class TestCombineBuffer {
 	
@@ -17,7 +21,7 @@ public class TestCombineBuffer {
 		System.out.println(cb.capacity());
 		Assert.assertTrue(cb.capacity() == 35);
 		
-		String s = "test";
+		String s = "test test";
 		byte[] bb = s.getBytes();
 		cb.put(0, bb, 0, bb.length);
 		cb.get(0, bb, 0, bb.length);

@@ -1,4 +1,6 @@
-package com.util.offheap;
+package com.util.buffer.store;
+
+import com.util.buffer.bytebuffer.ByteBuffer;
 
 public interface ByteBufferStore {
 	
@@ -7,4 +9,6 @@ public interface ByteBufferStore {
 	boolean free(ByteBuffer byteBuffer);
 	
 	void close();
+	
+	int freeMemory();
 }
