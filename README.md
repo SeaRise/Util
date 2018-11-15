@@ -9,7 +9,8 @@
 	- 封装了byteBuffer: heap,direct,dataOperator,combine
 	- 内存池: 位图分配
 - cache
-	- 引用计数缓存
+	- 引用计数
+	- lru
 - current
 	- 并发容器,
 		- AppendOnlyArrayList

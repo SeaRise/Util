@@ -1,5 +1,8 @@
 package com.util.cache;
 
+/*
+ * 缓存框架组件
+ * */
 public interface CacherOptions<K, V> {
 	// 当key不在缓存中时, 则调用该函数取得对应资源.
 	// 该函数必须要是并发安全的.

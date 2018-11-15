@@ -5,6 +5,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /*
  * 一个引用计数法的缓存框架.
+ * thread safe
  * */
 public class RefCountCacher<K, V> implements Cacher<K, V> {
 	
@@ -48,7 +49,7 @@ public class RefCountCacher<K, V> implements Cacher<K, V> {
 				}
 				//提前占坑
 				count++;
-				ref = new RefHolder<V>(true);
+				ref = new RefHolder<V>();
 				refs.put(key, ref);
 				lock.unlock();
 			}
@@ -90,7 +91,12 @@ public class RefCountCacher<K, V> implements Cacher<K, V> {
 	}
 	
 	public int count() {
-		return count;
+		try {
+			lock.lock();
+			return count;
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public void close() {
@@ -104,8 +110,8 @@ public class RefCountCacher<K, V> implements Cacher<K, V> {
 		private volatile boolean isGetting;
 		private volatile V value;
 		
-		private RefHolder(boolean isGetting) {
-			this.isGetting = isGetting;
+		private RefHolder() {
+			this.isGetting = true;
 		}
 	}
 }

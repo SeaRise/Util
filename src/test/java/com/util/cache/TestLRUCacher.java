@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestRefCountCache {
+public class TestLRUCacher {
 	
 	private static int maxHandles = 20000;
 	
@@ -19,8 +19,8 @@ public class TestRefCountCache {
 	
 	private static AtomicInteger count = new AtomicInteger(0);
 	
-	private RefCountCacher<Integer, AtomicBoolean> cacher = 
-			new RefCountCacher<Integer, AtomicBoolean>(
+	private LRUCacher<Integer, AtomicBoolean> cacher = 
+			new LRUCacher<Integer, AtomicBoolean>(
 					new TestOptions<Integer, AtomicBoolean>(maxHandles));
 	
 	@Test
@@ -32,7 +32,7 @@ public class TestRefCountCache {
 		while(count.intValue() != cacheNum*threadNum) {
 			Thread.sleep(100);
 		}
-		Assert.assertTrue(0 == cacher.count());
+		Assert.assertTrue(maxHandles == cacher.count());
 		
 	}
 	
