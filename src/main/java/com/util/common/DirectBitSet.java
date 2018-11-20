@@ -1,9 +1,7 @@
 package com.util.common;
 
-import com.util.buffer.bytebuffer.DataBuffer;
-import com.util.buffer.bytebuffer.DirectByteBuffer;
 
-/*
+/* Thread safe
  * 堆外内存位图
  * 
  * 应该算是失败的作品,
@@ -16,51 +14,36 @@ import com.util.buffer.bytebuffer.DirectByteBuffer;
  * */
 public class DirectBitSet {
 	
-	private final static int ADDRESS_BITS_PER_BTYE = 3;
+	private final static int ADDRESS_BITS_PER_WORD = 6;
 	
-	private final static int BIT_INDEX_MASK = 7;
-	
-	private static int byteIndex(int bitIndex) {
-        return bitIndex >> ADDRESS_BITS_PER_BTYE;
+	private static int wordIndex(int bitIndex) {
+        return bitIndex >> ADDRESS_BITS_PER_WORD;
     }
 	
-	private final DataBuffer buf;
-	private final int nbits;
+	private final DirectAtomicLongArray words;
 	
 	public DirectBitSet(int nbits) {
-		this.nbits = nbits;
-		this.buf = new DataBuffer(new DirectByteBuffer(byteIndex(nbits-1)+1));
+		words = new DirectAtomicLongArray(wordIndex(nbits-1) + 1);
 	}
 	
 	public void set(int bitIndex) {
-		checkBitIndex(bitIndex);
+		if (get(bitIndex)) {
+	        return;
+	    }
 		
-		int byteIndex = byteIndex(bitIndex);
-		byte b = buf.readByte(byteIndex);
-		b |= (1L << (bitIndex & BIT_INDEX_MASK));
-		buf.writeByte(byteIndex, b);
-	}
-	
-	public void clear(int bitIndex) {
-		checkBitIndex(bitIndex);
+		int wordsIndex = wordIndex(bitIndex);
+		long mask = 1L << bitIndex;
 		
-		int byteIndex = byteIndex(bitIndex);
-		byte b = buf.readByte(byteIndex);
-		b &= ~(1L << (bitIndex & BIT_INDEX_MASK));
-		buf.writeByte(byteIndex, b);
+		
+		long oldValue;
+	    long newValue;
+	    do {
+	        oldValue = words.get(wordsIndex);
+	        newValue = oldValue | mask;
+	    } while (!words.compareAndSet(wordsIndex, oldValue, newValue));
 	}
 	
 	public boolean get(int bitIndex) {
-		checkBitIndex(bitIndex);
-		
-		int byteIndex = byteIndex(bitIndex);
-		byte b = buf.readByte(byteIndex);
-		return (b & (1L << (bitIndex & BIT_INDEX_MASK))) != 0;
-	}
-	
-	private void checkBitIndex(int bitIndex) {
-		if (bitIndex < 0 || bitIndex >= nbits) {
-			throw new IndexOutOfBoundsException("bitIndex out of bounds: " + bitIndex);
-		}
+		return (words.get(wordIndex(bitIndex)) & (1L << bitIndex)) != 0;
 	}
 }

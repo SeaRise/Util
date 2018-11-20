@@ -7,18 +7,13 @@ public class TestDirectBitSet {
 	
 	@Test
 	public void test() {
-		int num = 500000;
-		DirectBitSet set = new DirectBitSet(num);
-		//BitSet set = new BitSet(num);
+		int num = Integer.MAX_VALUE;
+		DirectBitSet set = new DirectBitSet(num);//49.165
+		//BitSet set = new BitSet(num); 13.138
 		for (int i = 0; i < num; i++) {
 			Assert.assertFalse(set.get(i));
 			set.set(i);
 			Assert.assertTrue(set.get(i));
-		}
-		for (int i = 0; i < num; i++) {
-			Assert.assertTrue(set.get(i));
-			set.clear(i);
-			Assert.assertFalse(set.get(i));
 		}
 	}
 }
