@@ -1,6 +1,16 @@
 package com.util.common;
 
-
+/*
+ * thread safe
+ * 堆外内存的线程安全long数组
+ * 
+ * 原本想手动做内存对齐的
+ * 但是发现allocateDirect获得的堆外内存的address本身就是8的倍数
+ * 所以就没必要做内存对齐了
+ * long startAddress = ((sun.nio.ch.DirectBuffer)buf).address();
+ * long outOffset = startAddress % 8;
+ * address = startAddress + (outOffset == 0 ? 0 : 8-outOffset);
+ * */
 @SuppressWarnings("restriction")
 public class DirectAtomicLongArray {
 	private final long address;
@@ -25,7 +35,8 @@ public class DirectAtomicLongArray {
     }
 	
 	public DirectAtomicLongArray(int length) {
-		this.buf = java.nio.ByteBuffer.allocateDirect(length << LONG_SHIFT);
+		this.buf = java.nio.ByteBuffer.allocateDirect((length << LONG_SHIFT)+7);
+		
 		address = ((sun.nio.ch.DirectBuffer)buf).address();
 		this.length = length;
 	}
