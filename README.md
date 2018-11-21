@@ -17,4 +17,4 @@
 		- 单生产者单消费者的ringbuffer
 - Common
 	- 通用
-	- thread safe堆外内存BitSet
+	- thread safe堆外内存布隆过滤器

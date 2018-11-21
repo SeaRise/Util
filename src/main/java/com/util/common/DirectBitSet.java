@@ -23,6 +23,9 @@ public class DirectBitSet {
 	private final DirectAtomicLongArray words;
 	
 	public DirectBitSet(int nbits) {
+		if (nbits <= 0) {
+			throw new IllegalArgumentException("nbits <= 0; nbits: " + nbits);
+		}
 		words = new DirectAtomicLongArray(wordIndex(nbits-1) + 1);
 	}
 	
