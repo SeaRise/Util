@@ -18,4 +18,20 @@ public class Common {
 	public static Random random() {
 		return ThreadLocalRandom.current();
 	}
+	
+	/*
+	 * ThreadLocalStringBuilder
+	 * */
+	private static ThreadLocal<StringBuilder> localBuilder = 
+			new ThreadLocal<StringBuilder>() {
+		protected StringBuilder initialValue() {
+            return new StringBuilder();
+        }
+	};
+	
+	public static StringBuilder stringBuilder() {
+		StringBuilder builder = localBuilder.get();
+		builder.setLength(0);
+		return builder;
+	}
 }
