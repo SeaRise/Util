@@ -1,5 +1,6 @@
 package com.util.common;
 
+import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,6 +16,20 @@ public class Common {
         }
     }
 	
+	/*
+	 * 用来方便测试私有方法
+	 * */
+	public static Method getPrivateMethod(Object obj, String methodName, Class<?>... parameterTypes) {
+		try {
+			Method method = obj.getClass().getDeclaredMethod(methodName, parameterTypes);
+			method.setAccessible(true);
+			return method;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("get private method error!");
+		} 
+	}
+	
 	public static Random random() {
 		return ThreadLocalRandom.current();
 	}
@@ -22,7 +37,7 @@ public class Common {
 	/*
 	 * ThreadLocalStringBuilder
 	 * */
-	private static ThreadLocal<StringBuilder> localBuilder = 
+	private static final ThreadLocal<StringBuilder> localBuilder = 
 			new ThreadLocal<StringBuilder>() {
 		protected StringBuilder initialValue() {
             return new StringBuilder();

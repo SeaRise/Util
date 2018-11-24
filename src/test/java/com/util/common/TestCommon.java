@@ -7,7 +7,7 @@ public class TestCommon {
 	
 static String test = null;
 	
-	static int num = 1000000;
+	static int num = 5000000;
 	
 	static {
 		StringBuilder sb = new StringBuilder();

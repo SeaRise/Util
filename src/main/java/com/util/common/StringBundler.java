@@ -43,6 +43,9 @@ public class StringBundler {
 	
 	@Override
 	public String toString() {
+		if (index != strsHolder.length) {
+			throw new RuntimeException("stringBundler can not toString!");
+		}
 		char[] value = new char[length];
 		int begin = 0;
 		for (String str : strsHolder) {
