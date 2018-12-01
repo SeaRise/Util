@@ -4,6 +4,8 @@ import org.junit.Assert;
 
 import org.junit.Test;
 
+import com.util.common.hash.BloomFilter;
+
 public class TestBloomFilter {
 	
 	@Test

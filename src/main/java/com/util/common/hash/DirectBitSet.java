@@ -1,4 +1,4 @@
-package com.util.common;
+package com.util.common.hash;
 
 
 /* Thread safe

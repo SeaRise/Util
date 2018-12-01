@@ -3,6 +3,8 @@ package com.util.common;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.util.common.hash.DirectBitSet;
+
 public class TestDirectBitSet {
 	
 	@Test

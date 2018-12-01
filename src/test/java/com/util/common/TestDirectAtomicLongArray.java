@@ -3,6 +3,8 @@ package com.util.common;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.util.common.hash.DirectAtomicLongArray;
+
 public class TestDirectAtomicLongArray {
 	@Test
 	public void test() {

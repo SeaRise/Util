@@ -1,4 +1,4 @@
-package com.util.common;
+package com.util.common.hash;
 
 import com.google.common.hash.Hashing;
 
