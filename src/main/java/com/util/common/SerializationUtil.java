@@ -15,7 +15,6 @@ import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
  * Serialization Util（Based on Protostuff）
  */
 public class SerializationUtil {
-	//
     private static int schemaCapacity = 100;
     
     private static final Map<Class<?>, Schema<?>> cachedSchema = 
@@ -43,9 +42,9 @@ public class SerializationUtil {
     @SuppressWarnings("unchecked")
     private static <T> Schema<T> getSchema(Class<T> cls) {
         Schema<T> schema = (Schema<T>) cachedSchema.get(cls);
-        if (schema == null) {
+        if (null == schema) {
             schema = RuntimeSchema.createFrom(cls);
-            if (schema != null) {
+            if (null != cachedSchema.get(cls) && null != schema) {
                 cachedSchema.put(cls, schema);
             }
         }
