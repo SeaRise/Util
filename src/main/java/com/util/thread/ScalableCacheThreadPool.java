@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 可以伸缩线程数量的线程池.
+ * 可以伸缩线程数目的线程池.
  * */
 public class ScalableCacheThreadPool implements Executor {
     protected final Logger logger = LoggerFactory.getLogger(ScalableCacheThreadPool.class);
