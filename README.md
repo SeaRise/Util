@@ -15,6 +15,7 @@
 	- 并发容器,
 		- AppendOnlyArrayList
 		- 单生产者单消费者的ringbuffer
+	- diskBaseQueue
 - Common
 	- 通用
 	- thread safe堆外内存布隆过滤器
