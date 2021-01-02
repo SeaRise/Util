@@ -72,10 +72,14 @@ public class SerializationUtil {
      * 反序列化（字节数组 -> 对象）
      */
     public static <T> T deserialize(byte[] data, Class<T> cls) {
+        return deserialize(data, 0, data.length, cls);
+    }
+
+    public static <T> T deserialize(byte[] data,int offset, int length, Class<T> cls) {
         try {
-            T object = (T) objenesis.newInstance(cls);
+            T object = objenesis.newInstance(cls);
             Schema<T> schema = getSchema(cls);
-            ProtostuffIOUtil.mergeFrom(data, object, schema);
+            ProtostuffIOUtil.mergeFrom(data, offset, length, object, schema);
             return object;
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
